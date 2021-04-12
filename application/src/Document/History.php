@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Document;
 
+use App\Repository\HistoryRepository;
+use App\Service\CurrencyMarket\HistoryDTO;
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass=HistoryRepository::class)
  */
 class History
 {
@@ -92,5 +94,14 @@ class History
     {
         $this->date = $date;
         return $this;
+    }
+
+    public static function createFromHistoryDTO(HistoryDTO $dto, Pair $pair = null): History
+    {
+        $history = new History();
+        $history->setPrice($dto->getPrice());
+        $history->setDate($dto->getDate());
+
+        return $history;
     }
 }

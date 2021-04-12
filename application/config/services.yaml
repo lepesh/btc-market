@@ -29,3 +29,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\CurrencyMarket\BitcoinAverageMarket:
+        arguments:
+            $apiKey: '%env(string:BITCOIN_AVERAGE_API_KEY)%'
