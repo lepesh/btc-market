@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine
+FROM php:7.4-alpine
 
 RUN apk add --no-cache \
     coreutils \
@@ -15,7 +15,7 @@ RUN apk add --no-cache \
     php7-opcache \
     php7-openssl \
     php7-pdo \
-    php7-mongodb \
+    php7-pecl-mongodb \
     php7-xml \
     php7-zlib \
     php7-phar \
@@ -37,7 +37,9 @@ RUN if [[ "$ENABLE_PHP_XDEBUG" == "1" ]]; then \
 
 RUN curl -sS https://getcomposer.org/installer | tee composer-setup.php \
     && php7 composer-setup.php && rm composer-setup.php* \
-    && chmod +x composer.phar && mv composer.phar /usr/bin/composer
+    && chmod +x composer.phar && mv composer.phar /usr/bin/composer \
+    && rm -rf /usr/local/bin/php \
+    && ln -s /usr/bin/php7 /usr/local/bin/php
 
 COPY application.ini /etc/php7/conf.d/
 COPY application.ini /etc/php7/cli/conf.d/

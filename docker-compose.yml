@@ -4,8 +4,8 @@ services:
     image: mongo:4.4-bionic
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
 
   php:
     container_name: php-fpm
@@ -20,6 +20,9 @@ services:
       - ./logs/application:/var/www/application/var/log
     depends_on:
       - db
+    environment:
+      MONGODB_USERNAME: ${MONGODB_USERNAME}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
 
   nginx:
     container_name: nginx
