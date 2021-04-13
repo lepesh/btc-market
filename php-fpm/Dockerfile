@@ -2,6 +2,7 @@ FROM php:7.4-alpine
 
 RUN apk add --no-cache \
     coreutils \
+    shadow \
     php7-fpm \
     php7-ctype \
     php7-curl \
@@ -40,6 +41,8 @@ RUN curl -sS https://getcomposer.org/installer | tee composer-setup.php \
     && chmod +x composer.phar && mv composer.phar /usr/bin/composer \
     && rm -rf /usr/local/bin/php \
     && ln -s /usr/bin/php7 /usr/local/bin/php
+
+RUN usermod -u 1000 www-data
 
 COPY application.ini /etc/php7/conf.d/
 COPY application.ini /etc/php7/cli/conf.d/
