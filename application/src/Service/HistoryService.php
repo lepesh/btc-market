@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Document\History;
 use App\Document\Pair;
+use App\Repository\HistoryRepository;
 use App\Service\CurrencyMarket\CurrencyMarket;
 use DateInterval;
 use DateTime;
@@ -16,6 +17,7 @@ use Psr\Log\LoggerInterface;
 class HistoryService
 {
     private DocumentManager $dm;
+    private HistoryRepository $historyRepository;
     private CurrencyMarket $currencyMarket;
     private LoggerInterface $logger;
 
@@ -25,8 +27,20 @@ class HistoryService
         LoggerInterface $logger
     ) {
         $this->dm = $dm;
+        $this->historyRepository = $dm->getRepository(History::class);
         $this->currencyMarket = $currencyMarket;
         $this->logger = $logger;
+    }
+
+    /**
+     * @param Pair $pair
+     * @param DateTime|null $dateStart
+     * @param DateTime|null $dateEnd
+     * @return array|History[]
+     */
+    public function filterHistory(Pair $pair, DateTime $dateStart = null, DateTime $dateEnd = null): array
+    {
+        return $this->historyRepository->filter($pair, $dateStart, $dateEnd);
     }
 
     public function updateMarketHistory(Pair $pair, DateTime $startDate = null): bool
@@ -57,8 +71,7 @@ class HistoryService
      */
     private function resolveStartDate(?DateTime $startDate, Pair $pair): ?DateTime
     {
-        /** @var DateTime $latestDate */
-        $latestDate = $this->dm->getRepository(History::class)->getLatestDate($pair);
+        $latestDate = $this->historyRepository->getLatestDate($pair);
         if (!$latestDate) {
             // if history table is empty then last date will be 10 days before today (API restriction)
             $latestDate = (new DateTime())->sub(new DateInterval('P10D'));

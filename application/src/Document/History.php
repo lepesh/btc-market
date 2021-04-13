@@ -8,11 +8,12 @@ use App\Repository\HistoryRepository;
 use App\Service\CurrencyMarket\HistoryDTO;
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JsonSerializable;
 
 /**
  * @MongoDB\Document(repositoryClass=HistoryRepository::class)
  */
-class History
+class History implements JsonSerializable
 {
     /**
      * @MongoDB\Id
@@ -103,5 +104,13 @@ class History
         $history->setDate($dto->getDate());
 
         return $history;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'date' => $this->date->format(DATE_ATOM),
+            'price' => $this->price
+        ];
     }
 }

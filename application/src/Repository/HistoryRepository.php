@@ -17,6 +17,26 @@ class HistoryRepository extends ServiceDocumentRepository
         parent::__construct($registry, History::class);
     }
 
+    /**
+     * @param Pair $pair
+     * @param DateTime|null $dateStart
+     * @param DateTime|null $dateEnd
+     * @return array|History[]
+     */
+    public function filter(Pair $pair, DateTime $dateStart = null, DateTime $dateEnd = null): array
+    {
+        $qb = $this->createQueryBuilder()
+            ->field('pair')->equals($pair);
+        if ($dateStart) {
+            $qb->field('date')->gte($dateStart);
+        }
+        if ($dateEnd) {
+            $qb->field('date')->lte($dateEnd);
+        }
+
+        return $qb->getQuery()->execute()->toArray();
+    }
+
     public function getLatestDate(Pair $pair): ?DateTime
     {
         /** @var History $history */
