@@ -12,6 +12,7 @@ use JsonSerializable;
 
 /**
  * @MongoDB\Document(repositoryClass=HistoryRepository::class)
+ * @MongoDB\UniqueIndex(keys={"pair"="asc", "date"="asc"})
  */
 class History implements JsonSerializable
 {

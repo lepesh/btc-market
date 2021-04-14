@@ -26,7 +26,8 @@ class HistoryRepository extends ServiceDocumentRepository
     public function filter(Pair $pair, DateTime $dateStart = null, DateTime $dateEnd = null): array
     {
         $qb = $this->createQueryBuilder()
-            ->field('pair')->equals($pair);
+            ->field('pair')->equals($pair)
+            ->sort('date', 'ASC');
         if ($dateStart) {
             $qb->field('date')->gte($dateStart);
         }
